@@ -20,7 +20,7 @@ public class Barang extends AppCompatActivity {
     } public void load(){
         tvbarang=findViewById(R.id.tvBarang);
     } public void ambilData(){
-        String ambil=getIntent().getStringExtra(name= "ISI");
+        String ambil=getIntent().getStringExtra("ISI");
         tvbarang.setText(ambil);
     }
 }
