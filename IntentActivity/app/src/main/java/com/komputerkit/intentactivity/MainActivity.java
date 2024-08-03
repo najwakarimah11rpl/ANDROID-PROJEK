@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
             etbarang=findViewById(R.id.etBarang);
         } public void btnBarang(View view){
             String barang=etBarang.gettText().toString();
-            Intent intent=new Intent(packageContext= this,Barang.class);
-            intent.putExtra= (name= "ISI",barang);
+            Intent intent=new Intent(this,Barang.class);
+            intent.putExtra= ("ISI",barang);
             startActivities(intent);
         }
     }
