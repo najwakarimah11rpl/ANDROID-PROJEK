@@ -43,22 +43,33 @@ public class SiswaAdapter extends RecyclerView.Adapter<SiswaAdapter.ViewHolder{
 //    });
 //    }
     viewHolder.tvMenu.setOnclickListener(new View.OnClickListener()){
-        public void onClick(View view{
+        public void onClick(View view){
                 PopupMenu popupMenu=new PopupMenu(context.viewHolder.tvMenu);
                 popupMenu.inflate(R.menu.menu_option);
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()){
-                            case R.id.menu_simpan:
-                                Toast.makeText(context, "simpan data"+siswa.getNama(),Toast.LENGTH_SHORT).show();
-                                break;
-                            case R.id.menu_hapus:
-                                siswaList.remove(i);
-                                notifyDataSetChanged();
-                                Toast.makeText(context, siswa.getNama()+"sudah di hapus",Toast.LENGTH_SHORT).show();
+                        if (menuItem.getItemId() == R.id.menu_simpan) {
+                            // Handle the save action
+                            Toast.makeText(context, "Data saved for " + siswa.getNama(), Toast.LENGTH_SHORT).show();
+                        } else if (menuItem.getItemId() == R.id.menu_hapus) {
+                            // Handle the delete action
+                            siswaList.remove(i); // Remove the item from the list
+                            notifyDataSetChanged(); // Notify the adapter that the data set has changed
+                            Toast.makeText(context, siswa.getNama() + " has been deleted", Toast.LENGTH_SHORT).show();
                         }
+// Add additional else-if blocks for other menu items if necessary
+
+//                        switch (menuItem.getItemId()){
+//                            case R.id.menu_simpan:
+//                                Toast.makeText(context, "simpan data"+siswa.getNama(),Toast.LENGTH_SHORT).show();
+//                                break;
+//                            case R.id.menu_hapus:
+//                                siswaList.remove(i);
+//                                notifyDataSetChanged();
+//                                Toast.makeText(context, siswa.getNama()+"sudah di hapus",Toast.LENGTH_SHORT).show();
+//                        }
 
                         return false;
                     }
