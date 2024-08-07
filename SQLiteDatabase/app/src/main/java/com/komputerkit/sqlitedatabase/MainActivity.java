@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EdgeToEdge.enable(this); // Assuming this line is part of your library setup
+        // Ensure EdgeToEdge is correctly set up or remove if not needed
+        // EdgeToEdge.enable(this);
 
         load();
         selectData();
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         etBarang = findViewById(R.id.etBarang);
         etStok = findViewById(R.id.etStok);
         etHarga = findViewById(R.id.etHarga);
-        tvPilihan = findViewById(R.id.tvPilihan); // Assuming this TextView exists in your layout
+        tvPilihan = findViewById(R.id.tvPilihan);
         rcvBarang = findViewById(R.id.rcvBarang);
         rcvBarang.setLayoutManager(new LinearLayoutManager(this));
         rcvBarang.setHasFixedSize(true);
@@ -59,18 +60,20 @@ public class MainActivity extends AppCompatActivity {
             pesan("Data kosong");
         } else {
             if (pilihan.equals("insert")) {
-                String sql = "INSERT INTO tblbarang (barang, stok, harga) VALUES ('" + barang + "', " + stok + ", " + harga + ")";
+                String sql = "INSERT INTO tblbarang (barang, stok, harga) VALUES (?, ?, ?)";
+                Object[] params = {barang, stok, harga};
 
-                if (db.runSQL(sql)) {
+                if (db.runSQL(sql, params)) {
                     pesan("Insert berhasil");
                     selectData();
                 } else {
                     pesan("Insert gagal");
                 }
             } else if (pilihan.equals("update")) {
-                String sql = "UPDATE tblbarang SET barang='" + barang + "', stok=" + stok + ", harga=" + harga + " WHERE idbarang=" + idbarang;
+                String sql = "UPDATE tblbarang SET barang=?, stok=?, harga=? WHERE idbarang=?";
+                Object[] params = {barang, stok, harga, idbarang};
 
-                if (db.runSQL(sql)) {
+                if (db.runSQL(sql, params)) {
                     pesan("Data sudah diubah");
                     selectData();
                 } else {
@@ -95,28 +98,30 @@ public class MainActivity extends AppCompatActivity {
 
         databarang.clear(); // Clear the list before adding new data
 
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                String idbarang = cursor.getString(cursor.getColumnIndex("idbarang"));
-                String barang = cursor.getString(cursor.getColumnIndex("barang"));
-                String stok = cursor.getString(cursor.getColumnIndex("stok"));
-                String harga = cursor.getString(cursor.getColumnIndex("harga"));
-                databarang.add(new Barang(idbarang, barang, stok, harga));
-            } while (cursor.moveToNext());
-
-            // Initialize or update the adapter
-            if (adapter == null) {
-                adapter = new BarangAdapter(this, databarang);
-                rcvBarang.setAdapter(adapter);
-            } else {
-                adapter.notifyDataSetChanged();
-            }
-        } else {
-            pesan("Data kosong");
-        }
-
         if (cursor != null) {
-            cursor.close();
+            try {
+                if (cursor.moveToFirst()) {
+                    do {
+                        String idbarang = cursor.getString(cursor.getColumnIndex("idbarang"));
+                        String barang = cursor.getString(cursor.getColumnIndex("barang"));
+                        String stok = cursor.getString(cursor.getColumnIndex("stok"));
+                        String harga = cursor.getString(cursor.getColumnIndex("harga"));
+                        databarang.add(new Barang(idbarang, barang, stok, harga));
+                    } while (cursor.moveToNext());
+
+                    // Initialize or update the adapter
+                    if (adapter == null) {
+                        adapter = new BarangAdapter(this, databarang);
+                        rcvBarang.setAdapter(adapter);
+                    } else {
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    pesan("Data kosong");
+                }
+            } finally {
+                cursor.close();
+            }
         }
     }
 
@@ -129,9 +134,10 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("YA", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String sql = "DELETE FROM tblbarang WHERE idbarang=" + idbarang;
+                String sql = "DELETE FROM tblbarang WHERE idbarang=?";
+                Object[] params = {idbarang};
 
-                if (db.runSQL(sql)) {
+                if (db.runSQL(sql, params)) {
                     pesan("Data sudah dihapus");
                     selectData();
                 } else {
@@ -154,18 +160,21 @@ public class MainActivity extends AppCompatActivity {
     public void selectUpdate(String id) {
         idbarang = id;
 
-        String sql = "SELECT * FROM tblbarang WHERE idbarang=" + idbarang;
-        Cursor cursor = db.select(sql);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            etBarang.setText(cursor.getString(cursor.getColumnIndex("barang")));
-            etStok.setText(cursor.getString(cursor.getColumnIndex("stok")));
-            etHarga.setText(cursor.getString(cursor.getColumnIndex("harga")));
-            tvPilihan.setText("update");
-        }
+        String sql = "SELECT * FROM tblbarang WHERE idbarang=?";
+        Object[] params = {idbarang};
+        Cursor cursor = db.select(sql, params);
 
         if (cursor != null) {
-            cursor.close();
+            try {
+                if (cursor.moveToFirst()) {
+                    etBarang.setText(cursor.getString(cursor.getColumnIndex("barang")));
+                    etStok.setText(cursor.getString(cursor.getColumnIndex("stok")));
+                    etHarga.setText(cursor.getString(cursor.getColumnIndex("harga")));
+                    tvPilihan.setText("update");
+                }
+            } finally {
+                cursor.close();
+            }
         }
     }
 }
