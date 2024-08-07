@@ -37,46 +37,24 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.ViewHolder
         holder.tvStok.setText(barang.getStok());
         holder.tvHarga.setText(barang.getHarga());
 
-        holder.tvMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context, holder.tvMenu);
-                popupMenu.inflate(R.menu.menu_item);
+        holder.tvMenu.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(context, holder.tvMenu);
+            popupMenu.inflate(R.menu.menu_item);
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                if (item.getItemId() == R.id.ubah) {
-                                    ((MainActivity) context).selectUpdate(barang.getIdbarang());
-                                    return true;
-                                } else if (item.getItemId() == R.id.hapus) {
-                                    ((MainActivity) context).deleteData(barang.getIdbarang());
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-                            }
-                        });
+            popupMenu.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.ubah:
+                        ((MainActivity) context).selectUpdate(barang.getIdbarang());
+                        return true;
+                    case R.id.hapus:
+                        ((MainActivity) context).deleteData(barang.getIdbarang());
+                        return true;
+                    default:
+                        return false;
+                }
+            });
 
-
-//                        switch (item.getItemId()) {
-//                            case R.id.ubah:
-//                                ((MainActivity) context).selectUpdate(barang.getIdbarang());
-//                                return true;
-//                            case R.id.hapus:
-//                                ((MainActivity) context).deleteData(barang.getIdbarang());
-//                                return true;
-//                            default:
-//                                return false;
-//                        }
-//                    }
-//                });
-
-                popupMenu.show();
-            }
+            popupMenu.show();
         });
     }
 
@@ -93,7 +71,7 @@ public class BarangAdapter extends RecyclerView.Adapter<BarangAdapter.ViewHolder
             tvBarang = itemView.findViewById(R.id.tvBarang);
             tvStok = itemView.findViewById(R.id.tvStok);
             tvHarga = itemView.findViewById(R.id.tvHarga);
-            tvMenu = itemView.findViewById(R.id.tvMenu); // Assuming this is the ID of the menu TextView
+            tvMenu = itemView.findViewById(R.id.tvMenu);
         }
     }
 }
