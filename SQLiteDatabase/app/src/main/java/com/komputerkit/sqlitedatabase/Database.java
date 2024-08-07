@@ -7,42 +7,56 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class Database extends SQLiteOpenHelper {
-    private  static final String DATABASE_NAME="dbtoko";
-    private  static final int VERSION=1;
-    SQLiteDatabase db;
+    private static final String DATABASE_NAME = "dbtoko";
+    private static final int VERSION = 1;
+    private SQLiteDatabase db;
 
     public Database(Context context) {
-        super(context, DATABASE_NAME,null,VERSION);
-        db=this.getWritableDatabase();
+        super(context, DATABASE_NAME, null, VERSION);
+        db = this.getWritableDatabase();
     }
-    boolean runSQL(String sql){
-        try{
+
+    // Method to run SQL commands
+    boolean runSQL(String sql) {
+        try {
             db.execSQL(sql);
             return true;
-        } catch (Exception e){ return false;
-    }}
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-    Cursor select(String sql){
-        try{ return db.rawQuery(sql,null);
-    } catch (Exception e) {
+    // Method to run SELECT queries
+    Cursor select(String sql) {
+        try {
+            return db.rawQuery(sql, null);
+        } catch (Exception e) {
             return null;
         }
+    }
 
-    public void buatTabel(){
-        String tblBarang="CREATE TABLE \"tblbarang\" (\n" +
-                "\t\"idbarang\"\tINTEGER,\n" +
-                "\t\"barang\"\tTEXT,\n" +
-                "\t\"stok\"\tREAL,\n" +
-                "\t\"harga\"\tREAL,\n" +
-                "\tPRIMARY KEY(\"idbarang\" AUTOINCREMENT)\n" +
+    // Method to create tables
+    public void buatTabel() {
+        String tblBarang = "CREATE TABLE tblbarang (" +
+                "idbarang INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "barang TEXT, " +
+                "stok REAL, " +
+                "harga REAL" +
                 ")";
         runSQL(tblBarang);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        // Create tables when the database is created
+        buatTabel();
     }
+
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        // Handle database upgrades
+        // For now, just drop the existing tables and recreate them
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS tblbarang");
+        onCreate(sqLiteDatabase);
     }
 }
