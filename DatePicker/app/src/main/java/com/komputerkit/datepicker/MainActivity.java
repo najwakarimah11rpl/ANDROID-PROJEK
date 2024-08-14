@@ -30,11 +30,16 @@ public class MainActivity extends AppCompatActivity {
             int tgl=cal.get(Calendar.DAY_OF_MONTH);
             int bln=cal.get(Calendar.MONTH);
             int thn=cal.get(Calendar.YEAR);
-        DatePickerDialog dtp=new DatePickerDialog(context = this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-                public void onDateSet(DatePicker view, int thn, int bln,int tgl){
-                    etTanggal.setTanggal(tgl+"-"+(bln+1)+"-"+thn);
-                }
+        DatePickerDialog dtp=new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int thn, int bln, int tgl) {
+                String tanggal = tgl + "-" + (bln + 1) + "-" + thn;
+                etTanggal.setText(tanggal);
+            }
+//
+//            @Override
+//                public void onDateSet(DatePicker view, int thn, int bln,int tgl){
+//                    etTanggal.(tgl+"-"+(bln+1)+"-"+thn);
+//                }
             }, thn, bln, tgl);
         dtp.show();
         }}
