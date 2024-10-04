@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
 
-        // Set the WebViewClient before loading the URL
         myWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView wView, String url) {
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Load the initial URL
         myWebView.loadUrl("https://alphatechin.id/#:~:text=Alphatech%20solusi%20permasalahan%20teknologi%20dan%20bisnis%20Anda%20dengan");
     }
 
